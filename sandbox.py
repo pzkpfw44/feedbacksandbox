@@ -1,20 +1,22 @@
+import openai
+import os
 import random
 
 def get_scenario():
     scenarios = [
-        "John has consistently missed deadlines but has strong technical skills. Write constructive feedback for him.",
-        "Lisa is a high performer but struggles with teamwork. How would you give her feedback?",
-        "Michael is new to the team and seems hesitant to take initiative. Provide feedback to encourage him.",
-        "Sarah delivers excellent reports but rarely speaks up in meetings. How would you address this?"
+        "Project Alpha: John was responsible for data analysis but struggled with meeting deadlines. Provide constructive feedback on his contribution.",
+        "Project Beta: Lisa took the lead in organizing the project but received complaints about lack of inclusivity in decision-making. Write feedback for her.",
+        "Project Gamma: Michael contributed strong technical insights but had trouble collaborating with the team. How would you give him feedback?",
+        "Project Delta: Sarah delivered high-quality documentation but often missed team sync meetings. Provide balanced feedback.",
+        "Project Epsilon: David was proactive in brainstorming sessions but sometimes dismissed others' ideas too quickly. Write a structured feedback message."
     ]
     return random.choice(scenarios)
 
 def evaluate_feedback(feedback):
-    from openai import OpenAI
+    openai.api_key = os.getenv("OPENAI_API_KEY")
     
-    client = OpenAI()
     prompt = f"""
-    Evaluate the following workplace feedback for clarity, constructiveness, balance, and bias. 
+    Evaluate the following workplace feedback for clarity, constructiveness, balance, and bias.
     If it is vague, too negative, lacks actionability, or is emotionally charged, provide corrections.
     
     Feedback: {feedback}
@@ -22,12 +24,12 @@ def evaluate_feedback(feedback):
     Provide an improved version with explanations.
     """
     
-    response = client.chat.completions.create(
+    response = openai.ChatCompletion.create(
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}]
     )
     
-    return response.choices[0].message.content
+    return response["choices"][0]["message"]["content"]
 
 def feedback_sandbox():
     print("Welcome to the AI Feedback Sandbox!\n")
@@ -43,3 +45,4 @@ def feedback_sandbox():
 
 if __name__ == "__main__":
     feedback_sandbox()
+
